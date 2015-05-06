@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
+import android.view.ViewGroup;
 
 public class MyFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	private ArrayList<Fragment0> fList;
@@ -29,7 +30,7 @@ public class MyFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 
 	@Override
 	public int getItemPosition(Object object) {
-		return POSITION_UNCHANGED;
+		return POSITION_NONE;
 	}
 
 	public void addFragment() {
@@ -40,5 +41,9 @@ public class MyFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	public void removeFragment(int index) {
 		fList.remove(index);
 		notifyDataSetChanged();
+	}
+
+	@Override
+	public void destroyItem(ViewGroup viewPager, int position, Object object) {
 	}
 }

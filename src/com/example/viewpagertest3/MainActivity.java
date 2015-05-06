@@ -19,7 +19,6 @@ public class MainActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		viewPager = (ViewPager) findViewById(R.id.pager);
-		viewPager.setOffscreenPageLimit(10);
 		fList = new ArrayList<Fragment0>();
 		fList.add(new Fragment0());
 		adapter = new MyFragmentStatePagerAdapter(getSupportFragmentManager(), fList);
@@ -51,6 +50,7 @@ public class MainActivity extends FragmentActivity {
 			adapter.addFragment();
 			viewPager.setCurrentItem(fList.size()-1);
 		}
+		viewPager.setOffscreenPageLimit(fList.size());
 		return super.onOptionsItemSelected(item);
 	}
 }
