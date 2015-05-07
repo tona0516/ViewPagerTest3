@@ -43,14 +43,28 @@ public class MainActivity extends FragmentActivity {
 	@Override
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
-		if (id == R.id.remove) {
+		if (id == R.id.create) {
 			if (fList.size() != 1) {
-				adapter.removeFragment(currentPosition);
-				//viewPager.setCurrentItem(previousPosition);
+				fList.add(new CustomWebViewFragment(null));
+				ArrayList<CustomWebViewFragment> list = new ArrayList<CustomWebViewFragment>();
+				list.addAll(fList);
+				adapter = new MyFragmentStatePagerAdapter(getSupportFragmentManager(), list);
+				fList = list;
+				viewPager.setAdapter(adapter);
+				viewPager.setCurrentItem(fList.size()-1);
+				// adapter.removeFragment(currentPosition);
+
 			}
-		} else if (id == R.id.create) {
-			adapter.addFragment();
-			//viewPager.setCurrentItem(fList.size()-1);
+		} else if (id == R.id.remove) {
+			int current = viewPager.getCurrentItem();
+			fList.remove(current);
+			ArrayList<CustomWebViewFragment> list = new ArrayList<CustomWebViewFragment>();
+			list.addAll(fList);
+			adapter = new MyFragmentStatePagerAdapter(getSupportFragmentManager(), list);
+			fList = list;
+			viewPager.setAdapter(adapter);
+			viewPager.setCurrentItem(previousPosition);
+			//adapter.addFragment();
 		}
 		viewPager.setOffscreenPageLimit(fList.size());
 		return super.onOptionsItemSelected(item);
