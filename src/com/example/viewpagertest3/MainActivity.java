@@ -1,6 +1,6 @@
 package com.example.viewpagertest3;
 
-import java.util.ArrayList;
+import java.util.Stack;
 
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -10,20 +10,21 @@ import android.view.MenuItem;
 import android.view.Window;
 public class MainActivity extends FragmentActivity {
 	ViewPager viewPager;
-	ArrayList<CustomWebViewFragment> fList;
-	MyFragmentStatePagerAdapter adapter;
+	DynamicFragmentPagerAdapter adapter;
 	int currentPosition = 0, previousPosition = 0;
+	int count = 0;
+	public static Stack<Bundle> stack;
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
+		stack = new Stack<Bundle>();
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		viewPager.setOffscreenPageLimit(5);
-		fList = new ArrayList<CustomWebViewFragment>();
-		fList.add(new CustomWebViewFragment("http://www.amazon.co.jp/"));
-		fList.add(new CustomWebViewFragment("http://www.kakaku.com/"));
-		adapter = new MyFragmentStatePagerAdapter(getSupportFragmentManager(), fList);
+		adapter = new DynamicFragmentPagerAdapter(getSupportFragmentManager());
+		adapter.add("page" + (count++), new CustomWebViewFragment("http://www.amazon.co.jp/"));
+		adapter.add("page" + (count++), new CustomWebViewFragment("http://www.kakaku.com/"));
 		viewPager.setAdapter(adapter);
 		viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			@Override
@@ -44,26 +45,14 @@ public class MainActivity extends FragmentActivity {
 	public boolean onOptionsItemSelected(MenuItem item) {
 		int id = item.getItemId();
 		if (id == R.id.create) {
-			if (fList.size() != 1) {
-				fList.add(new CustomWebViewFragment(null));
-				ArrayList<CustomWebViewFragment> list = new ArrayList<CustomWebViewFragment>();
-				list.addAll(fList);
-				adapter = new MyFragmentStatePagerAdapter(getSupportFragmentManager(), list);
-				fList = list;
-				viewPager.setAdapter(adapter);
-				viewPager.setCurrentItem(fList.size() - 1);
-			}
+			adapter.add("page" + (count++), new CustomWebViewFragment(null));
+			adapter.notifyDataSetChanged();
 		} else if (id == R.id.remove) {
-			int current = viewPager.getCurrentItem();
-			fList.remove(current);
-			ArrayList<CustomWebViewFragment> list = new ArrayList<CustomWebViewFragment>();
-			list.addAll(fList);
-			adapter = new MyFragmentStatePagerAdapter(getSupportFragmentManager(), list);
-			fList = list;
-			viewPager.setAdapter(adapter);
-			viewPager.setCurrentItem(currentPosition);
+			if (adapter.getCount() != 1) {
+				adapter.remove(currentPosition);
+				adapter.notifyDataSetChanged();
+			}
 		}
-		viewPager.setOffscreenPageLimit(fList.size());
 		return super.onOptionsItemSelected(item);
 	}
 }
