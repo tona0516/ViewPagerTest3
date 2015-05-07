@@ -12,14 +12,17 @@ public class CustomWebViewFragment extends Fragment {
 
 	private WebView webView = null;
 	private String url = null;
+	private Bundle bundle = null;
 
 	public CustomWebViewFragment(String url) {
 		this.url = url;
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		bundle  =new Bundle();
 		View v = inflater.inflate(R.layout.fragment0, null);
 		if (savedInstanceState != null) {
+			Log.d("not null", "not null");
 			webView.restoreState(savedInstanceState);
 			int x,y;
 			x = savedInstanceState.getInt("scrollX");
@@ -37,24 +40,13 @@ public class CustomWebViewFragment extends Fragment {
 		}
 		return v;
 	}
-	
+
 	@Override
-	public void onHiddenChanged(boolean hidden) {
-		super.onHiddenChanged(hidden);
-		Log.d("hidden", hidden+":"+url);
-	}
-	
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-		webView.saveState(outState);
-		outState.putInt("scrollX", webView.getScrollX());
-		outState.putInt("scrollY", webView.getScrollY());
-	}
-	
-	@Override
-	public void onViewStateRestored(Bundle savedInstanceState) {
-		super.onViewStateRestored(savedInstanceState);
-		webView.restoreState(savedInstanceState);
+	public void setMenuVisibility(boolean menuVisible) {
+		// TODO 自動生成されたメソッド・スタブ
+		super.setMenuVisibility(menuVisible);
+		if(!menuVisible && webView != null){
+			Log.d("visibility", menuVisible+":"+url+","+webView.getScaleX()+","+webView.getScrollY());
+		}
 	}
 }

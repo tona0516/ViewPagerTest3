@@ -52,7 +52,6 @@ public class MainActivity extends FragmentActivity {
 				fList = list;
 				viewPager.setAdapter(adapter);
 				viewPager.setCurrentItem(fList.size()-1);
-				// adapter.removeFragment(currentPosition);
 
 			}
 		} else if (id == R.id.remove) {
@@ -64,7 +63,6 @@ public class MainActivity extends FragmentActivity {
 			fList = list;
 			viewPager.setAdapter(adapter);
 			viewPager.setCurrentItem(previousPosition);
-			//adapter.addFragment();
 		}
 		viewPager.setOffscreenPageLimit(fList.size());
 		return super.onOptionsItemSelected(item);
