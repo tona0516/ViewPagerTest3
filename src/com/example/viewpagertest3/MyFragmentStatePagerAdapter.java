@@ -31,4 +31,9 @@ public class MyFragmentStatePagerAdapter extends FragmentStatePagerAdapter {
 	public int getItemPosition(Object object) {
 		return POSITION_NONE;
 	}
+
+	public void addFragment() {
+		fList.add(new CustomWebViewFragment(null));
+		notifyDataSetChanged();
+	}
 }

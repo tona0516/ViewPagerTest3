@@ -45,28 +45,18 @@ public class MainActivity extends FragmentActivity {
 		int id = item.getItemId();
 		if (id == R.id.create) {
 			if (fList.size() != 1) {
-				fList.add(new CustomWebViewFragment(null));
-				// ArrayList<CustomWebViewFragment> list = new
-				// ArrayList<CustomWebViewFragment>();
-				// list.addAll(fList);
-				// adapter = new
-				// MyFragmentStatePagerAdapter(getSupportFragmentManager(),
-				// fList);
-				// fList = list;
-				viewPager.setAdapter(adapter);
-				viewPager.setCurrentItem(fList.size() - 1);
+				adapter.addFragment();
+				// viewPager.setCurrentItem(fList.size());
 			}
 		} else if (id == R.id.remove) {
-			int current = viewPager.getCurrentItem();
-			fList.remove(current);
-			// ArrayList<CustomWebViewFragment> list = new
-			// ArrayList<CustomWebViewFragment>();
-			// list.addAll(fList);
-			// adapter = new
-			// MyFragmentStatePagerAdapter(getSupportFragmentManager(), fList);
-			// fList = list;
+			fList.remove(currentPosition);
+			ArrayList<CustomWebViewFragment> list = new ArrayList<CustomWebViewFragment>();
+			list.addAll(fList);
+			adapter = new MyFragmentStatePagerAdapter(getSupportFragmentManager(), fList);
+			fList = list;
+			viewPager.destroyDrawingCache();
 			viewPager.setAdapter(adapter);
-			viewPager.setCurrentItem(previousPosition);
+			viewPager.setCurrentItem(currentPosition);
 		}
 		viewPager.setOffscreenPageLimit(fList.size());
 		return super.onOptionsItemSelected(item);
