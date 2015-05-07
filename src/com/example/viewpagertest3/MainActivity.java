@@ -23,8 +23,8 @@ public class MainActivity extends FragmentActivity {
 		viewPager = (ViewPager) findViewById(R.id.pager);
 		viewPager.setOffscreenPageLimit(5);
 		adapter = new DynamicFragmentPagerAdapter(getSupportFragmentManager());
-		adapter.add("page" + (count++), new CustomWebViewFragment("http://www.amazon.co.jp/"));
-		adapter.add("page" + (count++), new CustomWebViewFragment("http://www.kakaku.com/"));
+		//adapter.add("page" + (count++), new CustomWebViewFragment("http://www.amazon.co.jp/"));
+		adapter.add("page" + (count++), new CustomWebViewFragment(null));
 		viewPager.setAdapter(adapter);
 		viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
 			@Override

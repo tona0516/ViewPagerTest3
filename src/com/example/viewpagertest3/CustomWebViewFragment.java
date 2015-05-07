@@ -7,7 +7,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
-public class CustomWebViewFragment extends Fragment {
+public class CustomWebViewFragment extends Fragment{
 
 	private WebView mWebView = null;
 	private String mUrl = null;
@@ -24,7 +24,6 @@ public class CustomWebViewFragment extends Fragment {
 			@Override
 			public void onPageFinished(WebView view, String url) {
 				super.onPageFinished(view, url);
-				mUrl = url;
 			}
 		});
 		if (mUrl != null)
@@ -38,5 +37,16 @@ public class CustomWebViewFragment extends Fragment {
 	@Override
 	public void setMenuVisibility(boolean menuVisible) {
 		super.setMenuVisibility(menuVisible);
+	}
+
+	public String getUrl(){
+		return mWebView.getUrl();
+	}
+
+	public String getTitle() {
+		if(mWebView != null)
+		return mWebView.getTitle();
+		else
+			return "New Page";
 	}
 }

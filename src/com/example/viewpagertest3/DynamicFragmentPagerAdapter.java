@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.PagerAdapter;
@@ -16,9 +15,9 @@ import android.view.ViewGroup;
 /**
  * Fragmentを表示するPagerAdapter（動的変更版）
  */
-public class DynamicFragmentPagerAdapter extends PagerAdapter {
+public class DynamicFragmentPagerAdapter extends PagerAdapter{
 
-	private Fragment _primaryItem;
+	private CustomWebViewFragment _primaryItem;
 	private List<FragmentInfo> _fragments = new ArrayList<FragmentInfo>();
 	private FragmentManager _fm;
 	private FragmentTransactionProxy _ftp;
@@ -28,7 +27,7 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 	 * Fragmentの情報を所持するクラス
 	 */
 	protected static class FragmentInfo {
-		private WeakReference<Fragment> fragment;
+		private WeakReference<CustomWebViewFragment> fragment;
 		private CharSequence name;
 		private boolean isShown;
 
@@ -40,9 +39,9 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 		 * @param fragment
 		 *            表示するFragment
 		 */
-		public FragmentInfo(CharSequence name, Fragment fragment) {
+		public FragmentInfo(CharSequence name, CustomWebViewFragment fragment) {
 			this.name = name;
-			this.fragment = new WeakReference<Fragment>(fragment);
+			this.fragment = new WeakReference<CustomWebViewFragment>(fragment);
 		}
 
 		public CharSequence getName() {
@@ -51,13 +50,13 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 		public void setName(CharSequence name) {
 			this.name = name;
 		}
-		public Fragment getFragment() {
+		public CustomWebViewFragment getFragment() {
 			return this.fragment.get();
 		}
-		public void setFragment(Fragment fragment) {
+		public void setFragment(CustomWebViewFragment fragment) {
 			if (this.fragment != null)
 				this.fragment.clear();
-			this.fragment = new WeakReference<Fragment>(fragment);
+			this.fragment = new WeakReference<CustomWebViewFragment>(fragment);
 		}
 		public boolean isShown() {
 			return isShown;
@@ -93,17 +92,17 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 			_ft = ft;
 		}
 
-		public FragmentTransactionProxy attach(Fragment fragment) {
+		public FragmentTransactionProxy attach(CustomWebViewFragment fragment) {
 			_ft.attach(fragment);
 			return this;
 		}
 
-		public FragmentTransactionProxy detach(Fragment fragment) {
+		public FragmentTransactionProxy detach(CustomWebViewFragment fragment) {
 			_ft.detach(fragment);
 			return this;
 		}
 
-		public FragmentTransactionProxy hide(Fragment fragment) {
+		public FragmentTransactionProxy hide(CustomWebViewFragment fragment) {
 			_ft.hide(fragment);
 			return this;
 		}
@@ -112,12 +111,12 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 			return _ft.isEmpty();
 		}
 
-		public FragmentTransactionProxy remove(Fragment fragment) {
+		public FragmentTransactionProxy remove(CustomWebViewFragment fragment) {
 			_ft.remove(fragment);
 			return this;
 		}
 
-		public FragmentTransactionProxy show(Fragment fragment) {
+		public FragmentTransactionProxy show(CustomWebViewFragment fragment) {
 			_ft.show(fragment);
 			return this;
 		}
@@ -147,10 +146,10 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 	 *            表示名とFragmentのMap（これを用いて表示を初期化する）
 	 */
 	public DynamicFragmentPagerAdapter(FragmentManager fm,
-			Map<CharSequence, Fragment> fragments) {
+			Map<CharSequence, CustomWebViewFragment> fragments) {
 		_fm = fm;
 
-		for (Entry<CharSequence, Fragment> entry : fragments.entrySet()) {
+		for (Entry<CharSequence, CustomWebViewFragment> entry : fragments.entrySet()) {
 			_fragments.add(new FragmentInfo(entry.getKey(), entry.getValue()));
 		}
 	}
@@ -161,7 +160,7 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 
 	@Override
 	public CharSequence getPageTitle(int position) {
-		return _fragments.get(position).getName();
+		return _fragments.get(position).getFragment().getTitle();
 	}
 
 	@Override
@@ -189,14 +188,14 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 		 */
 
 		FragmentInfo fi = _fragments.get(position);
-		Fragment registFragment = fi.getFragment();
+		CustomWebViewFragment registFragment = fi.getFragment();
 
 		StringBuilder tag = new StringBuilder();
 		tag.append(container.getId()).append(":").append(fi.getName());
 
-		// ここに来る前にFragmentTransaction#remove(Fragment)を呼んでいないと、
+		// ここに来る前にFragmentTransaction#remove(CustomWebViewFragment)を呼んでいないと、
 		// どうあがいてもFragmentManagerのキャッシュが表示されてしまうので注意。
-		Fragment f = _fm.findFragmentByTag(tag.toString());
+		CustomWebViewFragment f = (com.example.viewpagertest3.CustomWebViewFragment) _fm.findFragmentByTag(tag.toString());
 		transaction();
 
 		// FragmentInfoに登録されているFragmentと一致するかどうかをチェックし、
@@ -230,11 +229,11 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 		 * その一点のためだけにFragmentPagerAdapterとFragmentStatePagerAdapterの処理が意味不明になっていると言っても過言ではない
 		 * 。
 		 *
-		 * このメソッドではあくまでもFragmentTransaction#detach(Fragment)しか行わない。
-		 * 本当に削除する必要がある場合は各メソッドでFragmentTransaction#remove(Fragment)を呼び出す必要がある。
+		 * このメソッドではあくまでもFragmentTransaction#detach(CustomWebViewFragment)しか行わない。
+		 * 本当に削除する必要がある場合は各メソッドでFragmentTransaction#remove(CustomWebViewFragment)を呼び出す必要がある。
 		 */
 
-		Fragment fragment = (Fragment) object;
+		CustomWebViewFragment fragment = (CustomWebViewFragment) object;
 		transaction();
 		_ftp.detach(fragment);
 	}
@@ -244,7 +243,7 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 		if (object == null)
 			return;
 
-		Fragment fragment = (Fragment) object;
+		CustomWebViewFragment fragment = (CustomWebViewFragment) object;
 
 		if (!fragment.equals(_primaryItem)) {
 
@@ -283,7 +282,7 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 
 	@Override
 	public final boolean isViewFromObject(View view, Object object) {
-		return ((Fragment) object).getView() == view;
+		return ((CustomWebViewFragment) object).getView() == view;
 	}
 
 	// TODO: この辺必要なのかな
@@ -307,7 +306,7 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 	 *
 	 * int index = Integer.parseInt(key.substring(1));
 	 *
-	 * Fragment f = _fm.getFragment(bundle, key); FragmentInfo fi = new
+	 * CustomWebViewFragment f = _fm.getFragment(bundle, key); FragmentInfo fi = new
 	 * FragmentInfo(bundle.getString("name"), f);
 	 * //fi.setNeedRemove(bundle.getBoolean("isNeedRemove"));
 	 *
@@ -328,7 +327,7 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 		 *
 		 * ちなみにattach / detachは既にremoveされているFragmentに実行しても何も起こらない。例外も出ない。
 		 * そのおかげで「
-		 * notifyDataSetChanged前にFragmentTransaction#remove(Fragment)を呼び出す」と言う
+		 * notifyDataSetChanged前にFragmentTransaction#remove(CustomWebViewFragment)を呼び出す」と言う
 		 * 一見危なっかしい行為がまかり通るようになっている。
 		 */
 		return _isNeedAllChange ? POSITION_NONE : POSITION_UNCHANGED;
@@ -344,7 +343,7 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 	 * @exception IllegalArgumentException
 	 *                表示名が重複している場合に発生
 	 */
-	public void add(CharSequence name, Fragment fragment) {
+	public void add(CharSequence name, CustomWebViewFragment fragment) {
 		if (hasName(name))
 			throw new IllegalArgumentException("表示名が重複しています。");
 
@@ -358,7 +357,7 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 	 *            0から始まる取得する場所
 	 * @return positionで指定された位置のFragment
 	 */
-	public Fragment get(int position) {
+	public CustomWebViewFragment get(int position) {
 		return _fragments.get(position).getFragment();
 	}
 
@@ -387,14 +386,14 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 	 * @exception IllegalArgumentException
 	 *                表示名が重複している場合に発生
 	 */
-	public void replace(int position, CharSequence name, Fragment fragment) {
+	public void replace(int position, CharSequence name, CustomWebViewFragment fragment) {
 		if (hasName(name, position))
 			throw new IllegalArgumentException("表示名が重複しています。");
 
 		FragmentInfo fi = _fragments.get(position);
 
 		// 一度でも表示されてしまったFragmentをreplaceする場合は
-		// 事前にFragmentTransactionProxy#remove(Fragment)を呼び出して削除しておく。
+		// 事前にFragmentTransactionProxy#remove(CustomWebViewFragment)を呼び出して削除しておく。
 		// （これをしておかないとinstantiateItemでFragmentManagerのキャッシュを返してしまう。）
 
 		// また、一度も表示されていない = 現在も表示されていない、となるので、
@@ -420,7 +419,7 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 	 * @exception IllegalArgumentException
 	 *                表示名が重複している場合に発生
 	 */
-	public void insert(int position, CharSequence name, Fragment fragment) {
+	public void insert(int position, CharSequence name, CustomWebViewFragment fragment) {
 		if (hasName(name))
 			throw new IllegalArgumentException("表示名が重複しています。");
 		_fragments.add(position, new FragmentInfo(name, fragment));
@@ -508,5 +507,4 @@ public class DynamicFragmentPagerAdapter extends PagerAdapter {
 		if (_ftp == null)
 			_ftp = new FragmentTransactionProxy(_fm.beginTransaction());
 	}
-
 }
