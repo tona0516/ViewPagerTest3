@@ -46,21 +46,25 @@ public class MainActivity extends FragmentActivity {
 		if (id == R.id.create) {
 			if (fList.size() != 1) {
 				fList.add(new CustomWebViewFragment(null));
-				ArrayList<CustomWebViewFragment> list = new ArrayList<CustomWebViewFragment>();
-				list.addAll(fList);
-				adapter = new MyFragmentStatePagerAdapter(getSupportFragmentManager(), list);
-				fList = list;
+				// ArrayList<CustomWebViewFragment> list = new
+				// ArrayList<CustomWebViewFragment>();
+				// list.addAll(fList);
+				// adapter = new
+				// MyFragmentStatePagerAdapter(getSupportFragmentManager(),
+				// fList);
+				// fList = list;
 				viewPager.setAdapter(adapter);
-				viewPager.setCurrentItem(fList.size()-1);
-
+				viewPager.setCurrentItem(fList.size() - 1);
 			}
 		} else if (id == R.id.remove) {
 			int current = viewPager.getCurrentItem();
 			fList.remove(current);
-			ArrayList<CustomWebViewFragment> list = new ArrayList<CustomWebViewFragment>();
-			list.addAll(fList);
-			adapter = new MyFragmentStatePagerAdapter(getSupportFragmentManager(), list);
-			fList = list;
+			// ArrayList<CustomWebViewFragment> list = new
+			// ArrayList<CustomWebViewFragment>();
+			// list.addAll(fList);
+			// adapter = new
+			// MyFragmentStatePagerAdapter(getSupportFragmentManager(), fList);
+			// fList = list;
 			viewPager.setAdapter(adapter);
 			viewPager.setCurrentItem(previousPosition);
 		}
