@@ -2,6 +2,7 @@ package com.example.viewpagertest3;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,17 +19,42 @@ public class CustomWebViewFragment extends Fragment {
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 		View v = inflater.inflate(R.layout.fragment0, null);
-		webView = (WebView) v.findViewById(R.id.webview);
 		if (savedInstanceState != null) {
 			webView.restoreState(savedInstanceState);
-		} else if (url != null) {
-			webView.loadUrl(url);
+			int x,y;
+			x = savedInstanceState.getInt("scrollX");
+			y = savedInstanceState.getInt("scrollY");
+			webView.scrollTo(x, y);
 		} else {
-			webView.loadUrl("https://www.google.co.jp");
+			webView = (WebView) v.findViewById(R.id.webview);
+			webView.getSettings().setJavaScriptEnabled(true);
+			webView.setWebViewClient(new WebViewClient() {
+			});
+			if (url != null)
+				webView.loadUrl(url);
+			else
+				webView.loadUrl("https://www.google.co.jp");
 		}
-		webView.getSettings().setJavaScriptEnabled(true);
-		webView.setWebViewClient(new WebViewClient() {
-		});
 		return v;
+	}
+	
+	@Override
+	public void onHiddenChanged(boolean hidden) {
+		super.onHiddenChanged(hidden);
+		Log.d("hidden", hidden+":"+url);
+	}
+	
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		webView.saveState(outState);
+		outState.putInt("scrollX", webView.getScrollX());
+		outState.putInt("scrollY", webView.getScrollY());
+	}
+	
+	@Override
+	public void onViewStateRestored(Bundle savedInstanceState) {
+		super.onViewStateRestored(savedInstanceState);
+		webView.restoreState(savedInstanceState);
 	}
 }
