@@ -10,56 +10,43 @@ import android.webkit.WebView;
 import android.webkit.WebViewClient;
 public class CustomWebViewFragment extends Fragment {
 
-	private WebView mWebView = null;
-	private String mUrl = null;
+	private WebView webView = null;
+	private String url = null;
+	private Bundle bundle = null;
 
 	public CustomWebViewFragment(String url) {
-		this.mUrl = url;
+		this.url = url;
 	}
 	@Override
 	public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+		bundle  =new Bundle();
 		View v = inflater.inflate(R.layout.fragment0, null);
-		mWebView = (WebView) v.findViewById(R.id.webview);
 		if (savedInstanceState != null) {
-			Log.d("State", "" + savedInstanceState);
-			mWebView.restoreState(savedInstanceState);
+			Log.d("not null", "not null");
+			webView.restoreState(savedInstanceState);
+			int x,y;
+			x = savedInstanceState.getInt("scrollX");
+			y = savedInstanceState.getInt("scrollY");
+			webView.scrollTo(x, y);
 		} else {
-			mWebView.getSettings().setJavaScriptEnabled(true);
-			mWebView.setWebViewClient(new WebViewClient() {
-				@Override
-				public void onPageFinished(WebView view, String url) {
-					super.onPageFinished(view, url);
-					mUrl = url;
-				}
+			webView = (WebView) v.findViewById(R.id.webview);
+			webView.getSettings().setJavaScriptEnabled(true);
+			webView.setWebViewClient(new WebViewClient() {
 			});
-			if (mUrl != null)
-				mWebView.loadUrl(mUrl);
+			if (url != null)
+				webView.loadUrl(url);
 			else
-				mWebView.loadUrl("https://www.google.co.jp");
+				webView.loadUrl("https://www.google.co.jp");
 		}
 		return v;
 	}
 
 	@Override
 	public void setMenuVisibility(boolean menuVisible) {
+		// TODO 自動生成されたメソッド・スタブ
 		super.setMenuVisibility(menuVisible);
-		Log.d("visibility", menuVisible + ":" + mUrl);
-		Bundle bundle = new Bundle();
-		if (!menuVisible && mWebView != null)
-			mWebView.saveState(bundle);
-		// Log.d("visibility", menuVisible + ":" + mUrl + "," +
-		// mWebView.getScaleX() + "," + mWebView.getScrollY());
-	}
-
-	@Override
-	public void onSaveInstanceState(Bundle outState) {
-		super.onSaveInstanceState(outState);
-        mWebView.saveState(outState);
-    }
-
-	@Override
-	public void onViewStateRestored(Bundle savedInstanceState) {
-		super.onViewStateRestored(savedInstanceState);
-		mWebView.restoreState(savedInstanceState);
+		if(!menuVisible && webView != null){
+			Log.d("visibility", menuVisible+":"+url+","+webView.getScaleX()+","+webView.getScrollY());
+		}
 	}
 }
