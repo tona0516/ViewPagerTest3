@@ -10,7 +10,7 @@ import android.view.MenuItem;
 import android.view.Window;
 public class MainActivity extends FragmentActivity {
 	ViewPager viewPager;
-	ArrayList<Fragment0> fList;
+	ArrayList<CustomWebViewFragment> fList;
 	MyFragmentStatePagerAdapter adapter;
 	int currentPosition = 0, previousPosition = 0;
 	@Override
@@ -19,8 +19,10 @@ public class MainActivity extends FragmentActivity {
 		requestWindowFeature(Window.FEATURE_NO_TITLE);
 		setContentView(R.layout.activity_main);
 		viewPager = (ViewPager) findViewById(R.id.pager);
-		fList = new ArrayList<Fragment0>();
-		fList.add(new Fragment0());
+		viewPager.setOffscreenPageLimit(5);
+		fList = new ArrayList<CustomWebViewFragment>();
+		fList.add(new CustomWebViewFragment("http://www.amazon.co.jp/"));
+		fList.add(new CustomWebViewFragment("http://www.kakaku.com/"));
 		adapter = new MyFragmentStatePagerAdapter(getSupportFragmentManager(), fList);
 		viewPager.setAdapter(adapter);
 		viewPager.setOnPageChangeListener(new ViewPager.SimpleOnPageChangeListener() {
@@ -44,11 +46,11 @@ public class MainActivity extends FragmentActivity {
 		if (id == R.id.remove) {
 			if (fList.size() != 1) {
 				adapter.removeFragment(currentPosition);
-				viewPager.setCurrentItem(previousPosition);
+				//viewPager.setCurrentItem(previousPosition);
 			}
 		} else if (id == R.id.create) {
 			adapter.addFragment();
-			viewPager.setCurrentItem(fList.size()-1);
+			//viewPager.setCurrentItem(fList.size()-1);
 		}
 		viewPager.setOffscreenPageLimit(fList.size());
 		return super.onOptionsItemSelected(item);
